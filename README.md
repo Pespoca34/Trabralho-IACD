@@ -1,4 +1,5 @@
-# Trabralho-IACD
+# Data Exploration and Enrichment for Supervised Classification 
+<img src="https://github.com/Pespoca34/Trabralho-IACD/assets/164920645/8ebf05a2-9fff-494d-90c5-5859f3d5c14b" hight = "200" width = "200">
 
 Este repositório contém os arquivos de código para um projeto de análise de dados de câncer de fígado(HCC). O objetivo principal é aplicar técnicas de aprendizado de máquina para prever os resultados dos pacientes baseando-se em diversas características clínicas.
 
