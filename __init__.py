@@ -76,6 +76,30 @@ knn_pipeline = Pipeline(steps=[
 #? Divide o modelo em teste e traino = 70% -> Treino, 30 -> Teste
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
+#! Identifica a importancia das características, para identificar se é melhor eliminar alguma de menor valor
+from sklearn.utils import permutation_importance
+
+def permutation_importance(model, X_test, y_test, scoring='accuracy'):
+  # Initialize empty array to store importance scores
+  importances = np.zeros(X_test.shape[1])
+
+  # Iterate over features
+  for i in range(X_test.shape[1]):
+    # Shuffle a copy of the feature data
+    X_test_shuffled = X_test.copy()
+    X_test_shuffled[:, i] = np.random.permutation(X_test_shuffled[:, i])
+
+    # Predict using the shuffled feature data
+    y_pred_shuffled = model.predict(X_test_shuffled)
+
+    # Calculate performance difference (original vs shuffled)
+    importance = scoring(y_test, y_pred_shuffled) - scoring(y_test, model.predict(X_test))
+    importances[i] = importance
+
+  # Return the importance scores
+  return importances
+
+
 #! Treino e avaliação para RandomForest
 rf_pipeline.fit(X_train, y_train)
 y_preds_rf = rf_pipeline.predict(X_test)
@@ -85,6 +109,17 @@ print("Accuracy:", accuracy_score(y_test, y_preds_rf))
 print("ROC AUC:", roc_auc_score(y_test, rf_pipeline.predict_proba(X_test)[:, 1]))
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_preds_rf))
 print("Classification Report:\n", classification_report(y_test, y_preds_rf))
+
+#! Identifica a importancia das características, para identificar se é melhor eliminar alguma de menor valor (2º metodo)
+rf_pipeline.fit(X_train, y_train)
+
+# Extract feature importance scores from the trained model
+feature_importances = rf_pipeline.steps[-1][1].feature_importances_
+
+# Print feature names and importances
+print("Feature Importances:")
+for feature, importance in zip(X.columns, feature_importances):
+    print(f"{feature}: {importance:.4f}")
 
 #! Treino e avaliação para KNN
 knn_pipeline.fit(X_train, y_train)
