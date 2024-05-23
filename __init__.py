@@ -76,23 +76,23 @@ knn_pipeline = Pipeline(steps=[
 #? Divide o modelo em teste e traino = 70% -> Treino, 30 -> Teste
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-#! Identifica a importancia das características, para identificar se é melhor eliminar alguma de menor valor
+#! Identifica a importancia das características, para identificar se é melhor eliminar alguma de menor impacto
 from sklearn.utils import permutation_importance
 
 def permutation_importance(model, X_test, y_test, scoring='accuracy'):
-  # Initialize empty array to store importance scores
+  # inicializa um array vazio para guardar as pontuações de importanciaI
   importances = np.zeros(X_test.shape[1])
 
-  # Iterate over features
+  # Itera entre features
   for i in range(X_test.shape[1]):
-    # Shuffle a copy of the feature data
+    # mistura uma copia dos features data
     X_test_shuffled = X_test.copy()
     X_test_shuffled[:, i] = np.random.permutation(X_test_shuffled[:, i])
 
-    # Predict using the shuffled feature data
+    # Predice utilizando os dados misturados do feature data
     y_pred_shuffled = model.predict(X_test_shuffled)
 
-    # Calculate performance difference (original vs shuffled)
+    # Calcula a diferença de desempenho (original vs misturado)
     importance = scoring(y_test, y_pred_shuffled) - scoring(y_test, model.predict(X_test))
     importances[i] = importance
 
@@ -113,7 +113,7 @@ print("Classification Report:\n", classification_report(y_test, y_preds_rf))
 #! Identifica a importancia das características, para identificar se é melhor eliminar alguma de menor valor (2º metodo)
 rf_pipeline.fit(X_train, y_train)
 
-# Extract feature importance scores from the trained model
+# Extrai pontuações de importância dos fetures do modelo treinado
 feature_importances = rf_pipeline.steps[-1][1].feature_importances_
 
 # Print feature names and importances
